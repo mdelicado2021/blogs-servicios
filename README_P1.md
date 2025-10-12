@@ -58,8 +58,6 @@ vis = create_visual_grid(grid, CELL_SIZE)
 WebGUI.showNumpy(vis)
 ```
 
-With the following result:
-
 ![image](https://github.com/user-attachments/assets/bfbeb670-9803-4d94-8293-90d32dad5b0c)
 
 To paint coloured cells during execution, I made copies of `vis` to display the result with `overlay = vis.copy()`.
@@ -75,33 +73,21 @@ overlay = vis.copy()
 path, return_points, critical_points = generate_bsa_path(grid, actual_cell, vis=overlay, cell_size=CELL_SIZE, delay=0.01)
 WebGUI.showNumpy(overlay)
 ```
-
-https://github.com/user-attachments/assets/851e25ec-1039-4c89-9144-e5ab9ea490d3
+[This is the result.](https://youtu.be/9nT0cJBBr0M)
 
 ## Navigation
 Navigation consists of travelling along the path of cells in such a way that you do not get stuck on obstacles. To do this, I have used several functions. 
 
 The function `go_to_point(x_target, y_target, state, tolerance=TOLERANCE, angle_tolerance=ANGLE_TOLERANCE)` uses proportional control for both linear and angular velocity to travel from the centre of the current cell to the centre of the next one. In addition, it is a simple state machine that can be orienting (with angular but not linear velocity), advancing (with linear but not angular velocity) or finished (both velocities at zero). This is done to avoid commanding both types of velocities at the same time and thus avoid inconsistencies in the route.
 
-On the other hand, we have a navigation sub-algorithm to generate the shortest route between the critical point and the return point so that we can continue with the main path: `navigate_to_cell(grid, start_cell, target_cell)`
-
-The final behaviour: 
-
-https://github.com/user-attachments/assets/8d0ebed9-0ac0-4b97-8554-1690c340c9c0
+On the other hand, we have a navigation sub-algorithm to generate the shortest route between the critical point and the return point so that we can continue with the main path: `navigate_to_cell(grid, start_cell, target_cell)`. [Here is the final behaviour.](https://youtu.be/RQ_kgK8-iJE)
 
 
 ## Some problems and possible improvements
 
-- Cells with obstacles and free cells added manually: since the expansion of obstacles is not exact and depends on a value, some obstacles may be too large and others too small. Therefore, a solution that modifies the cells, even if manual, is quite effective. An example of the vacuum cleaner trying to access an occupied cell: 
-
-
-
-https://github.com/user-attachments/assets/76553d84-7c41-4c70-8f47-f19e720acfdf
-
+- Cells with obstacles and free cells added manually: since the expansion of obstacles is not exact and depends on a value, some obstacles may be too large and others too small. Therefore, a solution that modifies the cells, even if manual, is quite effective. [An example of the vacuum cleaner trying to access an occupied cell](https://youtu.be/WlXHbOWlGfo)
 
 - Cell size: the ideal cell size would be equal to that of the vacuum cleaner and slightly smaller so as not to leave any space unswept, only the margins with obstacles. The problem is that the vacuum cleaner has a radius of around 35 pixels and, as mentioned above, the image has 1012 pixels and the next smallest divisor of 44 is 22 pixels, which is too small. That is why I have opted for a solution of 44x44 pixels per cell, even though it is somewhat large.
 
 - Slowness: for navigation between the centre of each cell to be accurate, the speed must be limited, especially for long distances, because otherwise the pre-established centre tolerance cannot be
-exceeded.
-
-https://github.com/user-attachments/assets/67b7b5c6-bab8-400e-8c74-9b7258c9b87b
+exceeded. [An example of the vacuum cleaner overshooting the target due to its speed](https://youtu.be/eISl8lVgkFo)
