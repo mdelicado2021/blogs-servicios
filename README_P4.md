@@ -38,10 +38,7 @@ Before planning, the map must be converted into a navigable representation:
 gray[i, j] = np.average(map_img[i, j]) * 127
 ```
 - Binarisation: light areas (shelves) are marked as obstacles.
-```python
-binary[gray < 100] = 127
-binary[gray >= 100] = 0
-```
+
 - Inflation of obstacles: to ensure safety, expansion is applied
 ```python
 inflated = cv2.dilate(binary, kernel)
@@ -58,22 +55,22 @@ Therefore, a transformation matrix `T` is calculated that allows:
 ## Key Functions
 The most relevant functions of the system are described below:
 
-### build_transform()
+### `build_transform()`
 Calculates the affine transformation matrix between world and map coordinates.
 Allows positions in metres to be converted to positions in pixels.
 
-### delete_pos()
+### `delete_pos()`
 ‘Removes’ a specific shelf from the map, deleting it from the inflated mask.
 This allows the robot to access a point that was originally blocked.
 
-### is_state_valid(state)
+### `is_state_valid(state)`
 Validity function for OMPL. Checks:
 - That the state does not go beyond the map boundaries.
 - That the point is in a cell free of inflated obstacles.
 - Essential for any sampling-based planner.
 
 
-### plan_path(start_map, goal_map)
+### `plan_path(start_map, goal_map)`
 Function that:
 - Converts map → world positions.
 - Configures an SE2 space.
@@ -85,7 +82,7 @@ Function that:
 - Converts the resulting path back to pixels for display.
 
 
-### follow_path_step(path_world)
+### `follow_path_step(path_world)`
 Implements a simple proportional controller:
 - If there is a large angular error → corrects yaw.
 - If correctly oriented → advances to the next point.
@@ -135,7 +132,7 @@ Overall, the system:
 
 
 ## Demonstration videos
-[*Path followed (shelve 0) with BITstar planner*](https://youtu.be/Vl1kNkpKlRg)
+- [*Path followed (shelve 0) with BITstar planner*](https://youtu.be/Vl1kNkpKlRg)
 
-[*Path followed (shelve 1) with BITstar planner*](https://youtu.be/JYGNksctC8Q)
+- [*Path followed (shelve 1) with BITstar planner*](https://youtu.be/JYGNksctC8Q)
 
